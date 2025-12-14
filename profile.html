@@ -1,1 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Dashboards</title>
+  <style>
+    :root {
+      --bg: #f4f6fa;
+      --text: #222;
+      --card-bg: #fff;
+    }
+    body.dark {
+      --bg: #121212;
+      --text: #e0e0e0;
+      --card-bg: #1e1e1e;
+    }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      width: 90%;
+      max-width: 900px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+      font-weight: bold;
+    }
+    .toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      font-size: 14px;
+      background: var(--card-bg);
+      padding: 8px 12px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="toggle" id="themeToggle">🌙 Dark</div>
+  <h1>Modern Dashboard Collection</h1>
+  <div class="grid">
+    <div class="card"><a href="admin-dashboard.html">Admin Dashboard</a></div>
+    <div class="card"><a href="ecommerce-dashboard.html">Ecommerce Dashboard</a></div>
+    <div class="card"><a href="analytics-dashboard.html">Analytics Dashboard</a></div>
+    <div class="card"><a href="social-dashboard.html">Social Dashboard</a></div>
+    <div class="card"><a href="crypto-dashboard.html">Crypto Dashboard</a></div>
+    <div class="card"><a href="project-dashboard.html">Project Management</a></div>
+    <div class="card"><a href="hr-dashboard.html">HR Dashboard</a></div>
+    <div class="card"><a href="finance-dashboard.html">Finance Dashboard</a></div>
+    <div class="card"><a href="iot-dashboard.html">IoT Dashboard</a></div>
+    <div class="card"><a href="marketing-dashboard.html">Marketing Dashboard</a></div>
+  </div>
 
+  <script>
+    const toggle = document.getElementById("themeToggle");
+    const theme = localStorage.getItem("theme") || "light";
+    document.body.classList.toggle("dark", theme === "dark");
+    toggle.textContent = theme === "dark" ? "☀️ Light" : "🌙 Dark";
+
+    toggle.onclick = () => {
+      const isDark = document.body.classList.toggle("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      toggle.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+    };
+  </script>
+</body>
+</html>
