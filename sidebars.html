@@ -1111,4 +1111,66 @@
                         {
                             label: 'Income',
                             data: incomeData,
-                            borderColor:
+                            borderColor: '#4361ee',
+                            backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Expenses',
+                            data: expenseData,
+                            borderColor: '#f72585',
+                            backgroundColor: 'rgba(247, 37, 133, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Utility functions
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+        
+        function formatCurrency(amount) {
+            const sign = amount >= 0 ? '' : '-';
+            const absAmount = Math.abs(amount);
+            return `${sign}$${absAmount.toFixed(2)}`;
+        }
+        
+        // Auto-update financial data every minute (simulation)
+        setInterval(() => {
+            if (currentUser) {
+                // Simulate some random fluctuations in balance
+                const fluctuation = (Math.random() - 0.5) * 100;
+                const currentBalance = parseFloat(document.getElementById('totalBalance').textContent.replace('$', ''));
+                const newBalance = Math.max(0, currentBalance + fluctuation);
+                
+                document.getElementById('totalBalance').textContent = `$${newBalance.toFixed(2)}`;
+            }
+        }, 60000);
+    </script>
+</body>
+</html>
