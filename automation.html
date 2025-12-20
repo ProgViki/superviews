@@ -1,99 +1,1114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modern Dashboards</title>
-  <style>
-    :root {
-      --bg: #f4f6fa;
-      --text: #222;
-      --card-bg: #fff;
-    }
-    body.dark {
-      --bg: #121212;
-      --text: #e0e0e0;
-      --card-bg: #1e1e1e;
-    }
-    body {
-      font-family: "Poppins", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.3s, color 0.3s;
-    }
-    h1 {
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      width: 90%;
-      max-width: 900px;
-    }
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      text-align: center;
-      transition: transform 0.3s, background 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-      font-weight: bold;
-    }
-    .toggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      background: var(--card-bg);
-      padding: 8px 12px;
-      border-radius: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinFlow | Financial Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #8d99ae;
+            --border: #e9ecef;
+        }
+
+        body {
+            background: #f5f7fb;
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-box {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .auth-box h2 {
+            color: var(--primary);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+            display: none;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 250px;
+            background: white;
+            box-shadow: 3px 0 20px rgba(0, 0, 0, 0.05);
+            padding: 20px 0;
+            z-index: 100;
+        }
+
+        .logo {
+            padding: 0 24px 30px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 28px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 5px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: #f0f5ff;
+            color: var(--primary);
+            border-right: 4px solid var(--primary);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--dark);
+            font-size: 28px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .logout-btn {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-title {
+            color: var(--gray);
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .stat-change {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .positive {
+            color: #2ecc71;
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            width: auto;
+            padding: 10px 20px;
+        }
+
+        .btn-secondary:hover {
+            background: #5a08a0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 16px;
+            border-bottom: 2px solid var(--border);
+            color: var(--gray);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: #d4f8e8;
+            color: #2ecc71;
+        }
+
+        .status-pending {
+            background: #fff4e6;
+            color: #f39c12;
+        }
+
+        .status-failed {
+            background: #ffe6e6;
+            color: var(--danger);
+        }
+
+        .payment-form {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-full-width {
+            grid-column: 1 / -1;
+        }
+
+        .verification-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            border-radius: 12px;
+            background: #f0f7ff;
+            margin-bottom: 20px;
+        }
+
+        .verification-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+            .sidebar .nav-text {
+                display: none;
+            }
+            .main-content {
+                margin-left: 80px;
+            }
+            .logo span {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .payment-form {
+                grid-template-columns: 1fr;
+            }
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="toggle" id="themeToggle">🌙 Dark</div>
-  <h1>Modern Dashboard Collection</h1>
-  <div class="grid">
-    <div class="card"><a href="admin-dashboard.html">Admin Dashboard</a></div>
-    <div class="card"><a href="ecommerce-dashboard.html">Ecommerce Dashboard</a></div>
-    <div class="card"><a href="analytics-dashboard.html">Analytics Dashboard</a></div>
-    <div class="card"><a href="social-dashboard.html">Social Dashboard</a></div>
-    <div class="card"><a href="crypto-dashboard.html">Crypto Dashboard</a></div>
-    <div class="card"><a href="project-dashboard.html">Project Management</a></div>
-    <div class="card"><a href="hr-dashboard.html">HR Dashboard</a></div>
-    <div class="card"><a href="finance-dashboard.html">Finance Dashboard</a></div>
-    <div class="card"><a href="iot-dashboard.html">IoT Dashboard</a></div>
-    <div class="card"><a href="marketing-dashboard.html">Marketing Dashboard</a></div>
-  </div>
+    <!-- Authentication Section -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-box">
+            <h2><i class="fas fa-chart-line"></i> FinFlow</h2>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuthTab('login')">Login</div>
+                <div class="auth-tab" onclick="switchAuthTab('register')">Register</div>
+            </div>
+            
+            <div id="loginAlert" class="alert"></div>
+            <div id="registerAlert" class="alert"></div>
+            
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="btn">Login</button>
+            </form>
+            
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" class="form-control" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="form-control" placeholder="Enter your email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" class="form-control" placeholder="Create a password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirm Password</label>
+                    <input type="password" id="registerConfirmPassword" class="form-control" placeholder="Confirm your password" required>
+                </div>
+                
+                <button type="submit" class="btn">Create Account</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Dashboard Section -->
+    <div class="dashboard-container" id="dashboardContainer">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>FinFlow</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" onclick="showSection('overview')">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-text">Overview</span>
+                </li>
+                <li class="nav-item" onclick="showSection('payments')">
+                    <i class="fas fa-credit-card"></i>
+                    <span class="nav-text">Payments</span>
+                </li>
+                <li class="nav-item" onclick="showSection('transactions')">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span class="nav-text">Transactions</span>
+                </li>
+                <li class="nav-item" onclick="showSection('verification')">
+                    <i class="fas fa-user-check"></i>
+                    <span class="nav-text">Verification</span>
+                </li>
+                <li class="nav-item" onclick="showSection('analytics')">
+                    <i class="fas fa-chart-bar"></i>
+                    <span class="nav-text">Analytics</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h1 id="sectionTitle">Dashboard Overview</h1>
+                
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Overview Section -->
+            <div id="overviewSection" class="dashboard-section">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-title">Total Balance</div>
+                        <div class="stat-value" id="totalBalance">$24,580.00</div>
+                        <div class="stat-change positive">+12.5% from last month</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Monthly Income</div>
+                        <div class="stat-value" id="monthlyIncome">$8,450.00</div>
+                        <div class="stat-change positive">+8.2% from last month</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Monthly Expenses</div>
+                        <div class="stat-value" id="monthlyExpenses">$3,210.00</div>
+                        <div class="stat-change negative">-3.1% from last month</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Pending Payments</div>
+                        <div class="stat-value" id="pendingPayments">$1,240.00</div>
+                        <div class="stat-change positive">2 payments</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Recent Transactions</div>
+                        <button class="btn btn-secondary" onclick="showSection('transactions')">
+                            View All
+                        </button>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentTransactions">
+                            <!-- Transactions will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Payments Section -->
+            <div id="paymentsSection" class="dashboard-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Make a Payment</div>
+                    </div>
+                    
+                    <form id="paymentForm">
+                        <div class="payment-form">
+                            <div class="form-group">
+                                <label for="recipient">Recipient</label>
+                                <input type="text" id="recipient" class="form-control" placeholder="Enter recipient name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="accountNumber">Account Number</label>
+                                <input type="text" id="accountNumber" class="form-control" placeholder="Enter account number" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="paymentAmount">Amount</label>
+                                <input type="number" id="paymentAmount" class="form-control" placeholder="0.00" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="paymentCurrency">Currency</label>
+                                <select id="paymentCurrency" class="form-control">
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group form-full-width">
+                                <label for="paymentDescription">Description</label>
+                                <input type="text" id="paymentDescription" class="form-control" placeholder="Payment description">
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn" style="margin-top: 20px;">
+                            <i class="fas fa-paper-plane"></i> Send Payment
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Payment History</div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Recipient</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentHistory">
+                            <!-- Payment history will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Transactions Section -->
+            <div id="transactionsSection" class="dashboard-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">All Transactions</div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="allTransactions">
+                            <!-- All transactions will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Verification Section -->
+            <div id="verificationSection" class="dashboard-section hidden">
+                <div class="verification-status">
+                    <div class="verification-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <div>
+                        <h3>Identity Verification</h3>
+                        <p id="verificationText">Your identity is pending verification</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Verify Your Identity</div>
+                    </div>
+                    
+                    <p style="margin-bottom: 20px; color: var(--gray);">
+                        To complete your account verification, please upload the required documents.
+                    </p>
+                    
+                    <div class="payment-form">
+                        <div class="form-group">
+                            <label for="idDocument">ID Document</label>
+                            <input type="file" id="idDocument" class="form-control" accept=".pdf,.jpg,.png">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="proofOfAddress">Proof of Address</label>
+                            <input type="file" id="proofOfAddress" class="form-control" accept=".pdf,.jpg,.png">
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="submitVerification()" style="margin-top: 20px;">
+                        <i class="fas fa-upload"></i> Submit Documents
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Analytics Section -->
+            <div id="analyticsSection" class="dashboard-section hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Financial Analytics</div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="financeChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <div class="stat-title">Avg. Monthly Spending</div>
+                        <div class="stat-value">$3,450</div>
+                        <div class="stat-change positive">On track with budget</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Investment Growth</div>
+                        <div class="stat-value">+18.7%</div>
+                        <div class="stat-change positive">+2.3% from last quarter</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-title">Credit Score</div>
+                        <div class="stat-value">780</div>
+                        <div class="stat-change positive">Excellent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <script>
-    const toggle = document.getElementById("themeToggle");
-    const theme = localStorage.getItem("theme") || "light";
-    document.body.classList.toggle("dark", theme === "dark");
-    toggle.textContent = theme === "dark" ? "☀️ Light" : "🌙 Dark";
-
-    toggle.onclick = () => {
-      const isDark = document.body.classList.toggle("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      toggle.textContent = isDark ? "☀️ Light" : "🌙 Dark";
-    };
-  </script>
-</body>
-</html>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Mock user database
+        const users = JSON.parse(localStorage.getItem('users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        
+        // Mock transaction data
+        const transactions = [
+            { id: 1, date: '2023-10-15', description: 'Salary Deposit', category: 'Income', amount: 4500.00, status: 'completed' },
+            { id: 2, date: '2023-10-14', description: 'Grocery Store', category: 'Food', amount: -125.50, status: 'completed' },
+            { id: 3, date: '2023-10-13', description: 'Netflix Subscription', category: 'Entertainment', amount: -15.99, status: 'completed' },
+            { id: 4, date: '2023-10-12', description: 'Freelance Payment', category: 'Income', amount: 1200.00, status: 'pending' },
+            { id: 5, date: '2023-10-11', description: 'Electric Bill', category: 'Utilities', amount: -89.75, status: 'completed' },
+            { id: 6, date: '2023-10-10', description: 'Amazon Purchase', category: 'Shopping', amount: -245.30, status: 'completed' },
+            { id: 7, date: '2023-10-09', description: 'Restaurant', category: 'Food', amount: -67.80, status: 'completed' },
+        ];
+        
+        // Mock payment history
+        const payments = [
+            { id: 1, date: '2023-10-14', recipient: 'John Smith', amount: 500.00, status: 'completed' },
+            { id: 2, date: '2023-10-10', recipient: 'ABC Corp', amount: 1200.00, status: 'completed' },
+            { id: 3, date: '2023-10-05', recipient: 'Jane Doe', amount: 300.00, status: 'pending' },
+            { id: 4, date: '2023-09-28', recipient: 'Utility Company', amount: 89.75, status: 'completed' },
+        ];
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentUser) {
+                showDashboard();
+            } else {
+                showAuth();
+            }
+            
+            initializeAuthForms();
+            populateTransactionTables();
+            populatePaymentHistory();
+            updateUserInfo();
+            initializeChart();
+        });
+        
+        // Authentication functions
+        function switchAuthTab(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:nth-child(1)').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:nth-child(2)').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+        
+        function initializeAuthForms() {
+            // Login form
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const alertDiv = document.getElementById('loginAlert');
+                
+                // Mock authentication - in real app, this would call an API
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    showDashboard();
+                    showAlert('Login successful! Redirecting...', 'success', alertDiv);
+                } else {
+                    showAlert('Invalid email or password', 'error', alertDiv);
+                }
+            });
+            
+            // Register form
+            document.getElementById('registerForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('registerName').value;
+                const email = document.getElementById('registerEmail').value;
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('registerConfirmPassword').value;
+                const alertDiv = document.getElementById('registerAlert');
+                
+                if (password !== confirmPassword) {
+                    showAlert('Passwords do not match', 'error', alertDiv);
+                    return;
+                }
+                
+                if (users.find(u => u.email === email)) {
+                    showAlert('User with this email already exists', 'error', alertDiv);
+                    return;
+                }
+                
+                // Create new user
+                const newUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    password: password,
+                    avatarInitials: name.split(' ').map(n => n[0]).join(''),
+                    verified: false
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                showAlert('Account created successfully! Please login.', 'success', alertDiv);
+                switchAuthTab('login');
+                document.getElementById('loginEmail').value = email;
+                document.getElementById('loginPassword').value = '';
+                
+                // Clear registration form
+                document.getElementById('registerForm').reset();
+            });
+        }
+        
+        function showAlert(message, type, alertDiv) {
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function showDashboard() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('dashboardContainer').style.display = 'block';
+            updateFinancialData();
+        }
+        
+        function showAuth() {
+            document.getElementById('authContainer').style.display = 'flex';
+            document.getElementById('dashboardContainer').style.display = 'none';
+        }
+        
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showAuth();
+        }
+        
+        // Dashboard functions
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(s => {
+                s.classList.add('hidden');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(`${section}Section`).classList.remove('hidden');
+            
+            // Update active nav item
+            const navItem = Array.from(document.querySelectorAll('.nav-item')).find(item => {
+                return item.querySelector('.nav-text').textContent.toLowerCase().includes(section);
+            });
+            
+            if (navItem) {
+                navItem.classList.add('active');
+            }
+            
+            // Update section title
+            const titles = {
+                overview: 'Dashboard Overview',
+                payments: 'Payments',
+                transactions: 'Transactions',
+                verification: 'Verification',
+                analytics: 'Analytics'
+            };
+            
+            document.getElementById('sectionTitle').textContent = titles[section];
+        }
+        
+        function updateUserInfo() {
+            if (currentUser) {
+                document.getElementById('userAvatar').textContent = currentUser.avatarInitials;
+                document.getElementById('verificationText').textContent = 
+                    currentUser.verified ? 'Your identity has been verified' : 'Your identity is pending verification';
+            }
+        }
+        
+        function updateFinancialData() {
+            // Calculate totals
+            const totalBalance = 24580.00;
+            const monthlyIncome = transactions
+                .filter(t => t.amount > 0 && new Date(t.date).getMonth() === new Date().getMonth())
+                .reduce((sum, t) => sum + t.amount, 0);
+                
+            const monthlyExpenses = Math.abs(transactions
+                .filter(t => t.amount < 0 && new Date(t.date).getMonth() === new Date().getMonth())
+                .reduce((sum, t) => sum + t.amount, 0));
+                
+            const pendingPayments = payments
+                .filter(p => p.status === 'pending')
+                .reduce((sum, p) => sum + p.amount, 0);
+            
+            // Update display
+            document.getElementById('totalBalance').textContent = `$${totalBalance.toFixed(2)}`;
+            document.getElementById('monthlyIncome').textContent = `$${monthlyIncome.toFixed(2)}`;
+            document.getElementById('monthlyExpenses').textContent = `$${monthlyExpenses.toFixed(2)}`;
+            document.getElementById('pendingPayments').textContent = `$${pendingPayments.toFixed(2)}`;
+        }
+        
+        function populateTransactionTables() {
+            // Recent transactions (last 3)
+            const recentTable = document.getElementById('recentTransactions');
+            recentTable.innerHTML = '';
+            
+            transactions.slice(0, 3).forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(transaction.date)}</td>
+                    <td>${transaction.description}</td>
+                    <td>${formatCurrency(transaction.amount)}</td>
+                    <td><span class="status status-${transaction.status}">${transaction.status}</span></td>
+                `;
+                recentTable.appendChild(row);
+            });
+            
+            // All transactions
+            const allTable = document.getElementById('allTransactions');
+            allTable.innerHTML = '';
+            
+            transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(transaction.date)}</td>
+                    <td>${transaction.description}</td>
+                    <td>${transaction.category}</td>
+                    <td>${formatCurrency(transaction.amount)}</td>
+                    <td><span class="status status-${transaction.status}">${transaction.status}</span></td>
+                `;
+                allTable.appendChild(row);
+            });
+        }
+        
+        function populatePaymentHistory() {
+            const paymentTable = document.getElementById('paymentHistory');
+            paymentTable.innerHTML = '';
+            
+            payments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatDate(payment.date)}</td>
+                    <td>${payment.recipient}</td>
+                    <td>$${payment.amount.toFixed(2)}</td>
+                    <td><span class="status status-${payment.status}">${payment.status}</span></td>
+                `;
+                paymentTable.appendChild(row);
+            });
+        }
+        
+        // Payment form handling
+        document.getElementById('paymentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const recipient = document.getElementById('recipient').value;
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const currency = document.getElementById('paymentCurrency').value;
+            const description = document.getElementById('paymentDescription').value;
+            
+            if (amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            // Create new payment
+            const newPayment = {
+                id: payments.length + 1,
+                date: new Date().toISOString().split('T')[0],
+                recipient: recipient,
+                amount: amount,
+                status: 'pending',
+                currency: currency,
+                description: description
+            };
+            
+            payments.unshift(newPayment);
+            populatePaymentHistory();
+            
+            // Add to transactions
+            const newTransaction = {
+                id: transactions.length + 1,
+                date: new Date().toISOString().split('T')[0],
+                description: `Payment to ${recipient}`,
+                category: 'Payment',
+                amount: -amount,
+                status: 'pending'
+            };
+            
+            transactions.unshift(newTransaction);
+            populateTransactionTables();
+            updateFinancialData();
+            
+            // Show success message
+            alert(`Payment of ${currency} ${amount.toFixed(2)} to ${recipient} has been initiated!`);
+            
+            // Reset form
+            document.getElementById('paymentForm').reset();
+        });
+        
+        // Verification handling
+        function submitVerification() {
+            const idDocument = document.getElementById('idDocument').files[0];
+            const proofOfAddress = document.getElementById('proofOfAddress').files[0];
+            
+            if (!idDocument || !proofOfAddress) {
+                alert('Please upload both required documents');
+                return;
+            }
+            
+            // Simulate verification process
+            setTimeout(() => {
+                currentUser.verified = true;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                updateUserInfo();
+                alert('Documents submitted successfully! Your verification is now pending review.');
+                
+                // Reset file inputs
+                document.getElementById('idDocument').value = '';
+                document.getElementById('proofOfAddress').value = '';
+            }, 1000);
+        }
+        
+        // Chart initialization
+        function initializeChart() {
+            const ctx = document.getElementById('financeChart').getContext('2d');
+            
+            // Mock data for the chart
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+            const incomeData = [6500, 7200, 8000, 8450, 8200, 8700];
+            const expenseData = [3100, 2900, 3300, 3210, 3400, 3250];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: incomeData,
+                            borderColor:
